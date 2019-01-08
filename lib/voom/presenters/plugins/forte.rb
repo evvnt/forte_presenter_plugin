@@ -5,7 +5,7 @@ module Voom
       module Forte
         module DSLMethods
           def forte(**attributes, &block)
-            if Rails && Rails.env
+            if defined?(Rails) && Rails.env
               env = Rails.env
             else
               env = 'development'
