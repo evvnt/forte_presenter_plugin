@@ -12,7 +12,21 @@ module Voom
             end
             self << Forte::Component.new(env: env, parent: self, **attributes, &block)
 
-            self << Presenters::DSL::Components::TextField.new(parent: self, id: 'account-name', name: 'account_name')
+            select = Presenters::DSL::Components::Select.new(parent: self,
+                                                                id: 'account-type',
+                                                                name: 'account_type')
+            select.option("Checking")
+            select.option("Savings")
+            self << select
+            self << Presenters::DSL::Components::TextField.new(parent: self,
+                                                               id: 'account-name',
+                                                               name: 'account_name')
+            self << Presenters::DSL::Components::TextField.new(parent: self,
+                                                               id: 'routing-number',
+                                                               name: 'routing_number')
+            self << Presenters::DSL::Components::TextField.new(parent: self,
+                                                               id: 'account-number',
+                                                               name: 'account_number')
           end
         end
         module WebClient
