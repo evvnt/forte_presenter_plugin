@@ -6,11 +6,11 @@ module Voom
         module DSLMethods
           def forte(**attributes, &block)
             if defined?(Rails) && Rails.env
-              env = Rails.env
+              @env = Rails.env
             else
-              env = 'development'
+              @env = 'development'
             end
-            self << Forte::Component.new(env: env, parent: self, **attributes, &block)
+            self << Forte::Component.new(env: @env, parent: self, **attributes, &block)
           end
         end
         module WebClient
