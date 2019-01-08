@@ -12,7 +12,7 @@ module Voom
             end
             self << Forte::Component.new(env: env, parent: self, **attributes, &block)
 
-            self << Presenters::DSL::Components::TextField(id: 'account-name', name: 'account_name')
+            self << Presenters::DSL::Components::TextField.new(id: 'account-name', name: 'account_name')
           end
         end
         module WebClient
