@@ -11,6 +11,8 @@ module Voom
               env = 'development'
             end
             self << Forte::Component.new(env: env, parent: self, **attributes, &block)
+
+            self << Presenters::DSL::Components::TextField(id: 'account-name', name: 'account_name')
           end
         end
         module WebClient
