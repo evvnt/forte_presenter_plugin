@@ -14,21 +14,23 @@ function createForteToken(_options, params, _event, results) {
         account_type: document.getElementById('forte-echeck-account-type').value
     };
 
-    var prom = new Promise(function (resolve) {
+    var promise = new Promise(function (resolve, reject) {
         forte.createToken(data).success(function (response) {
             var token = response.onetime_token;
-            var result = {action: 'create_forte_token', content: {token: token}, statusCode: 200}
+            var result = {action: 'create_forte_token', content: {token: token}, statusCode: 200};
             result.content = JSON.stringify(result.content);
             results.push(result);
             resolve(results);
         }).error(function (response) {
-            alert('failed');
             console.log(response);
+            var bad_result = {action: 'create_forte_token', contentType: 'application/json', content: {errors: response.response_description}, statusCode: 400};
+            bad_result.content = JSON.stringify(bad_result.content);
+            results.push(bad_result);
+            reject(results);
         });
     });
 
-
-    return prom;
+    return promise;
 }
 </script>
 
