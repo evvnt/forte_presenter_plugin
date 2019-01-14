@@ -6,7 +6,7 @@ module Voom
       module Forte
         class ForteJsComponent < DSL::Components::Base
           attr_reader :env
-          def initialize(env: env, **attribs_, &block)
+          def initialize(env:, **attribs_, &block)
             @env = env  
             super(type: :forte_js, **attribs_, &block)
           end

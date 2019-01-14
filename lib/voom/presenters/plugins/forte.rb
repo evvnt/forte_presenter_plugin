@@ -1,64 +1,76 @@
 require_relative 'forte/forte_js_component'
+require_relative 'forte/create_forte_token'
+
 module Voom
   module Presenters
     module Plugins
       module Forte
-        module DSLMethods
-          def forte_js(**attributes, &block)
-            if defined?(Rails) && Rails.env
-              env = Rails.env
-            else
-              env = 'development'
-            end
-            self << Forte::ForteJsComponent.new(env: env, parent: self, **attributes, &block)
-          end
+        @@api_login_id = nil
+        def self.set_api_login_id(x)
+          @@api_login_id = x
+        end
+        def self.api_login_id
+          @@api_login_id
+        end
 
-          def forte_echeck_form(**attributes, &block)
-            form = Presenters::DSL::Components::Form.new(parent: self,
-                                                          id: 'forte-echeck-form') do
-              select = Presenters::DSL::Components::Select.new(parent: self,
-                                                                  id: 'account-type',
-                                                                  name: 'account_type')
-              select.option("Checking", value: 'checking')
-              select.option("Savings", value: 'savings')
-              acct_name = Presenters::DSL::Components::TextField.new(parent: self,
-                                                                     id: 'account-name',
-                                                                     name: 'account_name')
-              acct_name.label("Name on Account")
-
-              rout_num = Presenters::DSL::Components::TextField.new(parent: self,
-                                                                 id: 'routing-number',
-                                                                 name: 'routing_number')
-              rout_num.label("Routing Number")
-              acct_num = Presenters::DSL::Components::TextField.new(parent: self,
-                                                                 id: 'account-number',
-                                                                 name: 'account_number')
-              acct_num.label("Account Number")
-              self << select
-              self << acct_name
-              self << rout_num
-              self << acct_num
-
-              button = Presenters::DSL::Components::Button.new(parent: self,
-                                                               text: "Submit",
-                                                               type: 'submit',
-                                                               id: 'forte-echeck-form-submit',
-                                                               name: 'forte_echeck_form_submit')
-              button.event :click do
-                # needs to activate some sort of event, which processes the input data
-                #
-                # then needs to call the Ruby command supplied to use the token to create a new permanent paymethod
-                #
-                # then needs to yield back to the block supplied, so that a snackbar or something can be shown
-              end
-
-              self << button
-            end
-            self << form
+        module DSLHelpers
+          def set_forte_api_login_id(id)
+            Plugins::Forte.set_api_login_id(id)
           end
         end
 
-        module WebClient
+        module DSLComponents
+          def forte_js(**attributes, &block)
+            env = (defined?(Rails) && Rails.env) || 'development'
+            self << Forte::ForteJsComponent.new(env: env, parent: self, **attributes, &block)
+          end
+
+          def forte_echeck_form(url:, **attributes, &block)
+            form id: 'forte-echeck-form' do
+              select id: 'forte-echeck-account-type', name: 'account_type' do
+                option("Checking", value: 'checking')
+                option("Savings", value: 'savings')
+              end
+              text_field id: 'forte-echeck-account-name', name: 'account_name' do
+                label "Name on Account"
+              end
+              text_field id: 'forte-echeck-routing-number', name: 'routing_number' do
+                label "Routing Number"
+              end
+              text_field id: 'forte-echeck-account-number', name: 'account_number' do
+                label "Account Number"
+              end
+
+              hidden_field id: 'forte-echeck-onetime-token', name: 'forte_echeck_onetime_token' do
+                event :change do
+                  # engage the ruby command with the value of this
+                  snackbar 'Posting'
+                  posts url
+                  snackbar 'Success'
+                  yield_to(&block)
+                end
+              end
+
+              button text: "Submit", id: 'forte-echeck-form-submit', name: 'forte_echeck_form_submit' do
+                event :click do
+                  # needs to activate some sort of event, which processes the input data
+                  create_forte_token api_login_id: Forte.api_login_id
+                  # then needs to call the Ruby command supplied to use the token to create a new permanent paymethod
+                  snackbar last_response.data.token
+                  # then needs to yield back to the block supplied, so that a snackbar or something can be shown
+                end
+              end
+            end
+          end
+        end
+
+        module DSLEventActions
+          def create_forte_token(**attributes, &block)
+            self << Forte::CreateForteToken.new(parent: self, **attributes, &block)
+          end
+        end
+
+        module WebClientComponents
           def render_forte_js(comp,
                              render:,
                              components:,
@@ -69,7 +81,16 @@ module Voom
                                  components: components, index: index}
           end
         end
+
+        module WebClientActions
+          def action_data_create_forte_token(action, _parent_id, *)
+            # Type, URL, Options, Params (passed into javascript event/action classes)
+            ['createForteToken', action.url, action.options.to_h, action.attributes.to_h]
+          end
+        end
       end
     end
   end
 end
+
+
