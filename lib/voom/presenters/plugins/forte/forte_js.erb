@@ -5,9 +5,10 @@
 <% end %>
 
 <script>
-function createForteToken(_options, params, _event) {
+function createForteToken(_options, params, _event, results) {
     var data = {
         api_login_id: params.api_login_id,
+        account_holder: document.getElementById('forte-echeck-account-name-input').value,
         account_number: document.getElementById('forte-echeck-account-number-input').value,
         routing_number: document.getElementById('forte-echeck-routing-number-input').value,
         account_type: document.getElementById('forte-echeck-account-type').value
@@ -16,13 +17,10 @@ function createForteToken(_options, params, _event) {
     var prom = new Promise(function (resolve) {
         forte.createToken(data).success(function (response) {
             var token = response.onetime_token;
-
-
-            /*
-        document.getElementById('forte-echeck-onetime-token').value = token;
-        var event = new Event('change');
-        document.getElementById('forte-echeck-onetime-token').dispatchEvent(event);*/
-            resolve({action: 'create_forte_token', content: {data: {token: "FAKETOKEN"}}, statusCode: 200});
+            var result = {action: 'create_forte_token', content: {token: token}, statusCode: 200}
+            result.content = JSON.stringify(result.content);
+            results.push(result);
+            resolve(results);
         }).error(function (response) {
             alert('failed');
             console.log(response);

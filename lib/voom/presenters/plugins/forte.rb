@@ -26,39 +26,26 @@ module Voom
           end
 
           def forte_echeck_form(url:, **attributes, &block)
-            form id: 'forte-echeck-form' do
-              select id: 'forte-echeck-account-type', name: 'account_type' do
-                option("Checking", value: 'checking')
-                option("Savings", value: 'savings')
-              end
-              text_field id: 'forte-echeck-account-name', name: 'account_name' do
-                label "Name on Account"
-              end
-              text_field id: 'forte-echeck-routing-number', name: 'routing_number' do
-                label "Routing Number"
-              end
-              text_field id: 'forte-echeck-account-number', name: 'account_number' do
-                label "Account Number"
-              end
+            select id: 'forte-echeck-account-type', name: 'account_type' do
+              option("Checking", value: 'checking')
+              option("Savings", value: 'savings')
+            end
+            text_field id: 'forte-echeck-account-name', name: 'account_name' do
+              label "Name on Account"
+            end
+            text_field id: 'forte-echeck-routing-number', name: 'routing_number' do
+              label "Routing Number"
+            end
+            text_field id: 'forte-echeck-account-number', name: 'account_number' do
+              label "Account Number"
+            end
 
-              hidden_field id: 'forte-echeck-onetime-token', name: 'forte_echeck_onetime_token' do
-                event :change do
-                  # engage the ruby command with the value of this
-                  snackbar 'Posting'
-                  posts url
-                  snackbar 'Success'
-                  yield_to(&block)
-                end
-              end
-
-              button text: "Submit", id: 'forte-echeck-form-submit', name: 'forte_echeck_form_submit' do
-                event :click do
-                  # needs to activate some sort of event, which processes the input data
-                  create_forte_token api_login_id: Forte.api_login_id
-                  # then needs to call the Ruby command supplied to use the token to create a new permanent paymethod
-                  snackbar last_response.data.token
-                  # then needs to yield back to the block supplied, so that a snackbar or something can be shown
-                end
+            button text: "Submit", id: 'forte-echeck-form-submit', name: 'forte_echeck_form_submit' do
+              event :click do
+                create_forte_token api_login_id: Forte.api_login_id
+                #snackbar last_response.token
+                posts url, onetime_token: last_response.token
+                yield_to(&block)
               end
             end
           end
