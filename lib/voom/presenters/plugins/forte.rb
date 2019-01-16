@@ -43,7 +43,6 @@ module Voom
             button text: "Submit", id: 'forte-echeck-form-submit', name: 'forte_echeck_form_submit' do
               event :click do
                 create_forte_token api_login_id: Forte.api_login_id
-                #snackbar last_response.token
                 posts url, onetime_token: last_response.token
                 yield_to(&block)
               end
