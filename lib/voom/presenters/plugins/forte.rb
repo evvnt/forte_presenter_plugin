@@ -30,20 +30,20 @@ module Voom
               option("Checking", value: 'c')
               option("Savings", value: 's')
             end
-            text_field id: 'forte-echeck-account-name', name: 'account_name', autocomplete: 'off' do
+            text_field id: 'forte-echeck-account-name', name: 'account_name', auto_complete: false, tag: :account_holder do
               label "Name on Account"
             end
-            text_field id: 'forte-echeck-routing-number', name: 'routing_number', autocomplete: 'off' do
+            text_field id: 'forte-echeck-routing-number', name: 'routing_number', auto_complete: false do
               label "Routing Number"
             end
-            text_field id: 'forte-echeck-account-number', name: 'account_number', autocomplete: 'off' do
+            text_field id: 'forte-echeck-account-number', name: 'account_number', auto_complete: false do
               label "Account Number"
             end
 
             button text: "Submit", id: 'forte-echeck-form-submit', name: 'forte_echeck_form_submit' do
               event :click do
                 create_forte_token api_login_id: Forte.api_login_id
-                posts url, onetime_token: last_response.token
+                posts url, onetime_token: last_response.token, input_tag: :account_holder
                 yield_to(&block)
               end
             end
