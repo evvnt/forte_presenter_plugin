@@ -27,16 +27,16 @@ module Voom
 
           def forte_echeck_form(url:, **attributes, &block)
             select id: 'forte-echeck-account-type', name: 'account_type' do
-              option("Checking", value: 'checking')
-              option("Savings", value: 'savings')
+              option("Checking", value: 'c')
+              option("Savings", value: 's')
             end
-            text_field id: 'forte-echeck-account-name', name: 'account_name' do
+            text_field id: 'forte-echeck-account-name', name: 'account_name', autocomplete: 'off' do
               label "Name on Account"
             end
-            text_field id: 'forte-echeck-routing-number', name: 'routing_number' do
+            text_field id: 'forte-echeck-routing-number', name: 'routing_number', autocomplete: 'off' do
               label "Routing Number"
             end
-            text_field id: 'forte-echeck-account-number', name: 'account_number' do
+            text_field id: 'forte-echeck-account-number', name: 'account_number', autocomplete: 'off' do
               label "Account Number"
             end
 
