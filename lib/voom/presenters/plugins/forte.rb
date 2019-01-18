@@ -32,7 +32,7 @@ module Voom
             end
             text_field id: 'forte-echeck-account-name', name: 'account_name', auto_complete: false, tag: :account_holder do
               label "Name on Account"
-              value prefill_data[:account_name] if prefill_data[:account_holder]
+              value prefill_data[:account_holder] if prefill_data[:account_holder]
             end
             text_field id: 'forte-echeck-routing-number', name: 'routing_number', auto_complete: false do
               label "Routing Number"
