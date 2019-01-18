@@ -27,6 +27,7 @@ module Voom
 
           def forte_echeck_form(url:, prefill_data: {}, **attributes, &block)
             select id: 'forte-echeck-account-type', name: 'account_type' do
+              label "Account Type"
               option("Checking", value: 'c', selected: prefill_data[:account_type] == 'checking')
               option("Savings", value: 's', selected: prefill_data[:account_type] == 'savings')
             end
