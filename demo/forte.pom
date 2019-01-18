@@ -1,0 +1,23 @@
+Voom::Presenters.define(:forte, namespace: :plugins) do
+  helpers Demo::Helpers::IndentedGrid
+  attach :top_nav
+  attach :events_drawer
+  plugin :forte
+
+  content do
+    set_forte_api_login_id 'YOUR_FORTE_API_LOGIN_HERE'
+    forte_js
+    indented_grid do
+      forte_echeck_form url: '/_echo_', prefill_data: {routing_number: '104000058'} do
+        snackbar 'Successful creation of token and posting to echo'
+      end
+      button text: "Cancel", id: 'forte-echeck-form-cancel' do
+        event :click do
+          snackbar 'cancelled'
+        end
+      end
+    end
+  end
+
+  attach :code, file: __FILE__
+end

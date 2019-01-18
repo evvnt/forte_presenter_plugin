@@ -25,16 +25,18 @@ module Voom
             self << Forte::ForteJsComponent.new(env: env, parent: self, **attributes, &block)
           end
 
-          def forte_echeck_form(url:, **attributes, &block)
+          def forte_echeck_form(url:, prefill_data: {}, **attributes, &block)
             select id: 'forte-echeck-account-type', name: 'account_type' do
-              option("Checking", value: 'c')
-              option("Savings", value: 's')
+              option("Checking", value: 'c', selected: prefill_data[:account_type] == 'checking')
+              option("Savings", value: 's', selected: prefill_data[:account_type] == 'savings')
             end
             text_field id: 'forte-echeck-account-name', name: 'account_name', auto_complete: false, tag: :account_holder do
               label "Name on Account"
+              value prefill_data[:account_name] if prefill_data[:account_holder]
             end
             text_field id: 'forte-echeck-routing-number', name: 'routing_number', auto_complete: false do
               label "Routing Number"
+              value prefill_data[:routing_number] if prefill_data[:routing_number]
             end
             text_field id: 'forte-echeck-account-number', name: 'account_number', auto_complete: false do
               label "Account Number"
