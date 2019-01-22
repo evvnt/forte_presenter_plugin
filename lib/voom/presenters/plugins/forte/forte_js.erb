@@ -22,8 +22,8 @@ function createForteToken(_options, params, _event, results) {
             results.push(result);
             resolve(results);
         }).error(function (response) {
-            console.log(response);
-            var bad_result = {action: 'create_forte_token', contentType: 'application/json', content: {errors: response.response_description}, statusCode: 400};
+            var message = response.response_description.gsub('_', ' ');
+            var bad_result = {action: 'create_forte_token', contentType: 'application/json', content: {errors: message}, statusCode: 400};
             bad_result.content = JSON.stringify(bad_result.content);
             results.push(bad_result);
             reject(results);
