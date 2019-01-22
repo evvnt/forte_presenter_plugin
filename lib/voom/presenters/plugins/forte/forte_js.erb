@@ -22,7 +22,7 @@ function createForteToken(_options, params, _event, results) {
             results.push(result);
             resolve(results);
         }).error(function (response) {
-            var message = response.response_description.gsub('_', ' ');
+            var message = response.response_description.replace('_', ' ');
             var bad_result = {action: 'create_forte_token', contentType: 'application/json', content: {errors: message}, statusCode: 400};
             bad_result.content = JSON.stringify(bad_result.content);
             results.push(bad_result);
