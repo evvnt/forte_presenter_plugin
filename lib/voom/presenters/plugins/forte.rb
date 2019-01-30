@@ -5,27 +5,13 @@ module Voom
   module Presenters
     module Plugins
       module Forte
-        @@api_login_id = nil
-        def self.set_api_login_id(x)
-          @@api_login_id = x
-        end
-        def self.api_login_id
-          @@api_login_id
-        end
-
-        module DSLHelpers
-          def set_forte_api_login_id(id)
-            Plugins::Forte.set_api_login_id(id)
-          end
-        end
-
         module DSLComponents
           def forte_js(**attributes, &block)
             env = (defined?(Rails) && Rails.env) || 'development'
             self << Forte::ForteJsComponent.new(env: env, parent: self, **attributes, &block)
           end
 
-          def forte_echeck_form(url:, prefill_data: {}, **attributes, &block)
+          def forte_echeck_form(url:, api_login_id:, prefill_data: {}, **attributes, &block)
             select id: 'forte-echeck-account-type', name: 'account_type' do
               label "Account Type"
               option("Checking", value: 'c', selected: prefill_data[:account_type] == 'checking')
@@ -45,7 +31,7 @@ module Voom
 
             button text: "Submit", id: 'forte-echeck-form-submit', name: 'forte_echeck_form_submit' do
               event :click do
-                create_forte_token api_login_id: Forte.api_login_id
+                create_forte_token api_login_id: api_login_id
                 posts url, onetime_token: last_response.token, input_tag: :account_holder
                 yield_to(&block)
               end
