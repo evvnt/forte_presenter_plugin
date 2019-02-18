@@ -1,9 +1,11 @@
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
+require 'voom/presenters/plugins/forte/version'
+
 Gem::Specification.new do |spec|
   spec.name          = "forte_presenter_plugin"
-  spec.version       = '0.0.1'
+  spec.version       = Voom::Presenters::Plugins::Forte::VERSION
   spec.authors       = ["Tyler Lemburg"]
   spec.email         = ["trlemburg@gmail.com"]
 
