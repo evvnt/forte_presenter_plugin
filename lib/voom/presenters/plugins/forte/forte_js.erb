@@ -11,7 +11,7 @@ function createForteToken(_options, params, _event, results) {
         account_holder: document.getElementById('forte-echeck-account-name-input').value,
         account_number: document.getElementById('forte-echeck-account-number-input').value,
         routing_number: document.getElementById('forte-echeck-routing-number-input').value,
-        account_type: document.getElementById('forte-echeck-account-type').value
+        account_type: document.getElementById('forte-echeck-account-type-input').value
     };
 
     var promise = new Promise(function (resolve, reject) {
